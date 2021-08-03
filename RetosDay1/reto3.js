@@ -1,5 +1,5 @@
-function crearDatos(nombreFichero) {
     let readLine = require('readline');
+    const fs = require('fs');
     let rl = readLine.createInterface({
 
         input: process.stdin,
@@ -17,46 +17,29 @@ function crearDatos(nombreFichero) {
             rl.question('Escribe edad: ', (answer3) => {
                 edad = answer3;
                 let objectJSON = { "name": nombre, "surname": apellido, "age": edad };
-                escribirEnFicheroJSON(nombreFichero, objectJSON);
-                leerEnFicheroJSON(nombreFichero);
-                borrarEnFicheroJSON(nombreFichero);
+
+
+                data = JSON.stringify(objectJSON);
+
+                fs.writeFile("myJSON.json", data, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+
+                });
+                fs.readFile("myJSON.json", (err, data) => {
+                    if (err) return err;
+                    let per = JSON.parse(data);
+                    console.log(per);
+
+                });
+                fs.rm("myJSON.json", (err, data) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+
                 rl.close();
             });
         });
     });
-
-}
-
-function escribirEnFicheroJSON(nombreFichero, objectJSON) {
-    data = JSON.stringify(objectJSON);
-
-    fs.writeFile(nombreFichero + ".json", data, (err) => {
-        if (err) {
-            console.log(err);
-        }
-
-    })
-};
-
-function leerEnFicheroJSON(nombreFichero) {
-    fs.readFile(nombreFichero + ".json", (err, data) => {
-        if (err) return err;
-        let per = JSON.parse(data);
-        console.log(per);
-
-    }
-
-    )
-};
-
-function borrarEnFicheroJSON(nombreFichero) {
-
-    fs.rm(nombreFichero + ".json", (err, data) => {
-        if (err) {
-            console.log(err);
-        }
-    }
-    );
-}
-
-crearDatos("myJSON");
